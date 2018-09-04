@@ -5,7 +5,7 @@ import CoreGraphics
     import UIKit
 #endif
 
-open class RoundedBarChartRender: BarLineScatterCandleBubbleRenderer
+open class RoundedBarChartRenderer: BarLineScatterCandleBubbleRenderer
 {
 
     private var cornerRadius: CGFloat = 0
