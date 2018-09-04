@@ -21,20 +21,19 @@ open class ChartData: NSObject
     internal var _leftAxisMin: Double = Double.greatestFiniteMagnitude
     internal var _rightAxisMax: Double = -Double.greatestFiniteMagnitude
     internal var _rightAxisMin: Double = Double.greatestFiniteMagnitude
-    
+
+    internal var _maxYScale: Double = 1
     internal var _dataSets = [IChartDataSet]()
     
     public override init()
     {
         super.init()
-        
         _dataSets = [IChartDataSet]()
     }
     
     @objc public init(dataSets: [IChartDataSet]?)
     {
         super.init()
-        
         _dataSets = dataSets ?? [IChartDataSet]()
         
         self.initialize(dataSets: _dataSets)
@@ -234,7 +233,12 @@ open class ChartData: NSObject
             }
         }
     }
-    
+
+    /// - set chart Y scale
+    @objc open func setMaxYScale(_ scale: Double) {
+        _maxYScale = scale
+    }
+
     /// - returns: The number of LineDataSets this object contains
     @objc open var dataSetCount: Int
     {
@@ -288,7 +292,7 @@ open class ChartData: NSObject
     @nonobjc
     open func getYMax() -> Double
     {
-        return _yMax
+        return _yMax * _maxYScale
     }
     
     @objc open func getYMax(axis: YAxis.AxisDependency) -> Double
@@ -297,22 +301,22 @@ open class ChartData: NSObject
         {
             if _leftAxisMax == -Double.greatestFiniteMagnitude
             {
-                return _rightAxisMax
+                return _rightAxisMax * _maxYScale
             }
             else
             {
-                return _leftAxisMax
+                return _leftAxisMax * _maxYScale
             }
         }
         else
         {
             if _rightAxisMax == -Double.greatestFiniteMagnitude
             {
-                return _leftAxisMax
+                return _leftAxisMax * _maxYScale
             }
             else
             {
-                return _rightAxisMax
+                return _rightAxisMax * _maxYScale
             }
         }
     }
