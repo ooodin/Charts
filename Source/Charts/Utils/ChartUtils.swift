@@ -159,20 +159,28 @@ open class ChartUtils
     open class func drawText(context: CGContext, text: String, point: CGPoint, align: NSTextAlignment, attributes: [NSAttributedStringKey : Any]?)
     {
         var point = point
-        
+
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+
+        var paragraphAttributes: [NSAttributedStringKey : Any] = (attributes ?? [:])
+        paragraphAttributes[NSAttributedStringKey.paragraphStyle] = paragraphStyle
+
         if align == .center
         {
-            point.x -= text.size(withAttributes: attributes).width / 2.0
+            point.x -= text.size(withAttributes: paragraphAttributes).width / 2.0
         }
         else if align == .right
         {
-            point.x -= text.size(withAttributes: attributes).width
+            point.x -= text.size(withAttributes: paragraphAttributes).width
         }
-        
+        point.y -= text.size(withAttributes: paragraphAttributes).height
+
         NSUIGraphicsPushContext(context)
-        
-        (text as NSString).draw(at: point, withAttributes: attributes)
-        
+
+        let rect = CGRect(origin: point, size: text.size(withAttributes: paragraphAttributes))
+        (text as NSString).draw(with: rect, options: .usesLineFragmentOrigin, attributes: paragraphAttributes, context: nil)
+
         NSUIGraphicsPopContext()
     }
     
