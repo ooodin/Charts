@@ -680,7 +680,7 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
             { // If we have no data, we have nothing to pan and no data to highlight
                 return
             }
-            
+            _outerScrollView?.nsuiIsScrollEnabled = false
             // If drag is enabled and we are in a position where there's something to drag:
             //  * If we're zoomed in, then obviously we have something to drag.
             //  * If we have a drag offset - we always have something to drag
@@ -708,7 +708,6 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
                     if _outerScrollView !== nil
                     {
                         // We can stop dragging right now, and let the scroll view take control
-                        _outerScrollView = nil
                         _isDragging = false
                     }
                 }
@@ -932,42 +931,38 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
             otherGestureRecognizer is NSUIPanGestureRecognizer,
             gestureRecognizer == _panGestureRecognizer
         {
-            var scrollView = self.superview
-            while scrollView != nil && !(scrollView is NSUIScrollView)
-            {
-                scrollView = scrollView?.superview
-            }
-            
-            // If there is two scrollview together, we pick the superview of the inner scrollview.
-            // In the case of UITableViewWrepperView, the superview will be UITableView
-            if let superViewOfScrollView = scrollView?.superview,
-                superViewOfScrollView is NSUIScrollView
-            {
-                scrollView = superViewOfScrollView
-            }
+            var foundScrollView = findScrollView(in: self)
 
-            var foundScrollView = scrollView as? NSUIScrollView
-            
             if !(foundScrollView?.nsuiIsScrollEnabled ?? true)
             {
                 foundScrollView = nil
             }
-            
+
             let scrollViewPanGestureRecognizer = foundScrollView?.nsuiGestureRecognizers?.first {
                 $0 is NSUIPanGestureRecognizer
             }
-            
+
             if otherGestureRecognizer === scrollViewPanGestureRecognizer
             {
                 _outerScrollView = foundScrollView
-                
+
                 return true
             }
         }
         
         return false
     }
-    
+
+    func findScrollView(in view: UIView) -> NSUIScrollView? {
+        if let scrollView = view as? NSUIScrollView {
+            return scrollView
+        } else if let superView = view.superview {
+            return findScrollView(in: superView)
+        } else {
+            return nil
+        }
+    }
+
     /// MARK: Viewport modifiers
     
     /// Zooms in by 1.4, into the charts center.
