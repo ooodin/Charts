@@ -567,7 +567,7 @@ open class RoundedBarChartRenderer: BarLineScatterCandleBubbleRenderer
 
                             for k in 0 ..< transformed.count
                             {
-                                let y = rect.maxY
+                                let y = rect.maxY - (posOffset * 3)
                                 if !viewPortHandler.isInBoundsRight(x)
                                 {
                                     break
