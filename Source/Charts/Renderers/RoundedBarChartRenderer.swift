@@ -2,7 +2,7 @@ import Foundation
 import CoreGraphics
 
 #if !os(OSX)
-    import UIKit
+import UIKit
 #endif
 
 open class RoundedBarChartRenderer: BarLineScatterCandleBubbleRenderer
@@ -366,7 +366,7 @@ open class RoundedBarChartRenderer: BarLineScatterCandleBubbleRenderer
 
             var dataSets = barData.dataSets
 
-            let valueOffsetPlus: CGFloat = 4.5
+            let valueOffsetPlus: CGFloat = -8.5
             var posOffset: CGFloat
             var negOffset: CGFloat
             let drawValueAboveBar = dataProvider.isDrawValueAboveBarEnabled
@@ -567,7 +567,7 @@ open class RoundedBarChartRenderer: BarLineScatterCandleBubbleRenderer
 
                             for k in 0 ..< transformed.count
                             {
-                                let y = rect.maxY - (posOffset * 3)
+                                let y = rect.maxY + posOffset
                                 if !viewPortHandler.isInBoundsRight(x)
                                 {
                                     break
